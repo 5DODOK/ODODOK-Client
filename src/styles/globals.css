@@ -1,0 +1,48 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: local('Paperlogy'),
+    url('/fonts/Paperlogy-7Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: local('Paperlogy'),
+    url('/fonts/Paperlogy-6SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Paperlogy';
+  src: local('Paperlogy'),
+    url('/fonts/Paperlogy-5Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-family: 'Paperlogy', ui-sans-serif, system-ui, -apple-system, Segoe UI,
+    Roboto, Noto Sans, 'Noto Sans KR', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
+body {
+  font-family: var(--font-family);
+}

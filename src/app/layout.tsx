@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import "../styles/globals.css";
+import Header from "@/components/layout/Header";
 
 export const metadata: Metadata = {
   title: "BumaView",
@@ -13,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Header />
         {children}
       </body>
     </html>
