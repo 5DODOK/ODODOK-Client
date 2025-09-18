@@ -1,43 +1,47 @@
 import styled from '@emotion/styled';
 
 export const Container = styled.div`
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 56px 24px;
+  background: #f8f8f8;
+  min-height: calc(100vh - 100px);
 `;
 
 export const PageTitle = styled.h1`
-  font-size: 2rem;
+  font-size: clamp(32px, 5vw, 48px);
   font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 2rem;
+  color: #111;
+  margin: 0 0 40px;
   text-align: center;
 `;
 
 export const ProfileHeader = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
   display: flex;
   align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  color: white;
+  gap: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f1f1;
   
   @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
-    gap: 1rem;
+    gap: 24px;
+    padding: 24px;
   }
 `;
 
 export const ProfileAvatar = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid white;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border: 3px solid #f1f1f1;
+  background: #f8f8f8;
 `;
 
 export const AvatarImage = styled.img`
@@ -51,25 +55,26 @@ export const ProfileInfo = styled.div`
 `;
 
 export const ProfileName = styled.h2`
-  font-size: 1.8rem;
+  font-size: 24px;
   font-weight: 700;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px 0;
+  color: #111;
 `;
 
-export const ProfileLevel = styled.div<{ color: string }>`
-  background-color: ${props => props.color};
-  color: white;
-  padding: 0.3rem 0.8rem;
-  border-radius: 15px;
-  font-size: 0.9rem;
+export const ProfileLevel = styled.div`
+  background-color: #f1f1f1;
+  color: #666;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
   font-weight: 600;
   display: inline-block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 `;
 
 export const ProfileRank = styled.div`
-  font-size: 1rem;
-  opacity: 0.9;
+  font-size: 16px;
+  color: #666;
 `;
 
 export const ProfileScore = styled.div`
@@ -77,46 +82,50 @@ export const ProfileScore = styled.div`
 `;
 
 export const ScoreValue = styled.div`
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 700;
-  margin-bottom: 0.25rem;
+  margin-bottom: 4px;
+  color: #111;
 `;
 
 export const ScoreLabel = styled.div`
-  font-size: 0.9rem;
-  opacity: 0.9;
+  font-size: 14px;
+  color: #666;
 `;
 
 export const TabNavigation = styled.div`
   display: flex;
-  background-color: #f8fafc;
+  background-color: #fff;
   border-radius: 12px;
-  padding: 0.5rem;
-  margin-bottom: 2rem;
+  padding: 8px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f1f1;
 `;
 
 export const TabButton = styled.button<{ active: boolean }>`
   flex: 1;
-  padding: 0.75rem;
-  background-color: ${props => props.active ? 'white' : 'transparent'};
-  color: ${props => props.active ? '#374151' : '#6b7280'};
+  padding: 12px 16px;
+  background-color: ${props => props.active ? '#111' : 'transparent'};
+  color: ${props => props.active ? '#fff' : '#666'};
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: ${props => props.active ? '0 2px 4px rgba(0, 0, 0, 0.1)' : 'none'};
+  transition: all 0.15s ease;
   
   &:hover {
-    background-color: ${props => props.active ? 'white' : '#f1f5f9'};
+    background-color: ${props => props.active ? '#111' : '#f8f8f8'};
+    color: ${props => props.active ? '#fff' : '#111'};
   }
 `;
 
 export const TabContent = styled.div`
-  background-color: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f1f1;
 `;
 
 export const ProfileSection = styled.div``;
@@ -130,9 +139,9 @@ export const ProfileView = styled.div`
 export const ProfileField = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f3f4f6;
+  gap: 8px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f1f1f1;
   
   &:last-of-type {
     border-bottom: none;
@@ -140,20 +149,20 @@ export const ProfileField = styled.div`
 `;
 
 export const FieldLabel = styled.div`
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 600;
-  color: #6b7280;
+  color: #666;
 `;
 
 export const FieldValue = styled.div`
-  font-size: 1rem;
-  color: #374151;
+  font-size: 16px;
+  color: #111;
   line-height: 1.5;
 `;
 
 export const FieldLink = styled.a`
-  font-size: 1rem;
-  color: #3b82f6;
+  font-size: 16px;
+  color: #111;
   text-decoration: none;
   
   &:hover {
@@ -163,59 +172,58 @@ export const FieldLink = styled.a`
 
 export const EditButton = styled.button`
   align-self: flex-start;
-  padding: 0.75rem 1.5rem;
-  background-color: #3b82f6;
-  color: white;
+  padding: 12px 24px;
+  background-color: #111;
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.04s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 1);
   
-  &:hover {
-    background-color: #2563eb;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 1);
   }
 `;
 
 export const EditForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 24px;
 `;
 
 export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
 export const Label = styled.label`
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: #111;
 `;
 
 export const Input = styled.input`
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
+  padding: 12px;
+  border: 1px solid #e5e5e5;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
   transition: border-color 0.2s ease;
   
   &:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #111;
   }
 `;
 
 export const Textarea = styled.textarea`
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
+  padding: 12px;
+  border: 1px solid #e5e5e5;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
   min-height: 100px;
   resize: vertical;
   font-family: inherit;
@@ -223,120 +231,121 @@ export const Textarea = styled.textarea`
   
   &:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #111;
   }
 `;
 
 export const ButtonGroup = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 12px;
 `;
 
 export const SaveButton = styled.button`
-  padding: 0.75rem 1.5rem;
-  background-color: #10b981;
-  color: white;
+  padding: 12px 24px;
+  background-color: #111;
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.04s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 1);
   
-  &:hover {
-    background-color: #059669;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 1);
   }
 `;
 
 export const CancelButton = styled.button`
-  padding: 0.75rem 1.5rem;
-  background-color: #6b7280;
-  color: white;
-  border: none;
-  border-radius: 8px;
+  padding: 12px 24px;
+  background-color: #fff;
+  color: #111;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.04s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
   
-  &:hover {
-    background-color: #4b5563;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
   }
 `;
 
 export const StatsSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 32px;
 `;
 
 export const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  gap: 16px;
 `;
 
 export const StatCard = styled.div`
-  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  background: #fff;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 24px;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f1f1;
 `;
 
 export const StatValue = styled.div`
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 0.5rem;
+  color: #111;
+  margin-bottom: 8px;
 `;
 
 export const StatLabel = styled.div`
-  font-size: 0.9rem;
-  color: #6b7280;
+  font-size: 14px;
+  color: #666;
   font-weight: 500;
 `;
 
 export const DifficultyStats = styled.div``;
 
 export const StatsTitle = styled.h3`
-  font-size: 1.3rem;
+  font-size: 20px;
   font-weight: 600;
-  color: #374151;
-  margin-bottom: 1rem;
+  color: #111;
+  margin-bottom: 16px;
 `;
 
 export const DifficultyGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 16px;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 `;
 
-export const DifficultyCard = styled.div<{ color: string }>`
-  background-color: ${props => props.color};
-  color: white;
+export const DifficultyCard = styled.div`
+  background-color: #fff;
+  border: 2px solid #f1f1f1;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 24px;
   text-align: center;
 `;
 
 export const DifficultyLabel = styled.div`
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 500;
-  margin-bottom: 0.5rem;
-  opacity: 0.9;
+  margin-bottom: 8px;
+  color: #666;
 `;
 
 export const DifficultyCount = styled.div`
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 700;
+  color: #111;
 `;
 
 export const HistorySection = styled.div``;
@@ -344,18 +353,18 @@ export const HistorySection = styled.div``;
 export const HistoryList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
 `;
 
 export const HistoryItem = styled.div`
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 1.5rem;
+  border: 1px solid #f1f1f1;
+  border-radius: 12px;
+  padding: 24px;
   transition: all 0.2s ease;
+  background: #fff;
   
   &:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #e5e5e5;
   }
 `;
 
@@ -363,24 +372,24 @@ export const HistoryHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.8rem;
-  gap: 1rem;
+  margin-bottom: 12px;
+  gap: 16px;
 `;
 
 export const HistoryTitle = styled.h4`
-  font-size: 1.1rem;
+  font-size: 16px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #111;
   margin: 0;
   flex: 1;
 `;
 
-export const HistoryDifficulty = styled.span<{ color: string }>`
-  background-color: ${props => props.color};
-  color: white;
-  padding: 0.25rem 0.6rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
+export const HistoryDifficulty = styled.span`
+  background-color: #f1f1f1;
+  color: #666;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
 `;
@@ -388,12 +397,12 @@ export const HistoryDifficulty = styled.span<{ color: string }>`
 export const HistoryMeta = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
-  color: #6b7280;
+  font-size: 14px;
+  color: #666;
   
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 4px;
   }
 `;
 
@@ -401,5 +410,5 @@ export const HistoryDate = styled.div``;
 
 export const HistoryScore = styled.div`
   font-weight: 600;
-  color: #10b981;
+  color: #111;
 `;

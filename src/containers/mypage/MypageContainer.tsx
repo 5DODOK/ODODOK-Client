@@ -37,7 +37,7 @@ export default function MypageContainer() {
 
   const [profile, setProfile] = useState<UserProfile>({
     email: 'ohyun@ododok.com',
-    bio: '알고리즘을 사랑하는 개발자입니다.',
+    bio: '면접을 대비하는 개발자입니다. 기술면접과 인성면접 모두 준비하고 있습니다.',
     github: 'https://github.com/ohyun',
     blog: 'https://blog.ohyun.dev'
   });
@@ -59,37 +59,37 @@ export default function MypageContainer() {
   const solvedProblems: SolvedProblem[] = [
     {
       id: 1,
-      title: "두 수의 합",
+      title: "자기소개를 해주세요",
       difficulty: "easy",
-      solvedAt: "2024-01-15",
+      solvedAt: "2024-03-15",
       score: 100
     },
     {
       id: 2,
-      title: "이진 탐색 구현",
+      title: "React의 Virtual DOM에 대해 설명해주세요",
       difficulty: "medium",
-      solvedAt: "2024-01-14",
+      solvedAt: "2024-03-14",
       score: 150
     },
     {
       id: 3,
-      title: "동적 계획법 기초",
+      title: "데이터베이스 인덱스의 동작 원리를 설명해주세요",
       difficulty: "hard",
-      solvedAt: "2024-01-13",
+      solvedAt: "2024-03-13",
       score: 200
     },
     {
       id: 4,
-      title: "그래프 탐색",
+      title: "팀에서 갈등이 생겼을 때 어떻게 해결하시나요?",
       difficulty: "medium",
-      solvedAt: "2024-01-12",
+      solvedAt: "2024-03-12",
       score: 150
     },
     {
       id: 5,
-      title: "정렬 알고리즘",
+      title: "우리 회사에 지원한 이유가 무엇인가요?",
       difficulty: "easy",
-      solvedAt: "2024-01-11",
+      solvedAt: "2024-03-11",
       score: 100
     }
   ];
@@ -129,31 +129,12 @@ export default function MypageContainer() {
     }));
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return '#10b981';
-      case 'medium': return '#f59e0b';
-      case 'hard': return '#ef4444';
-      default: return '#6b7280';
-    }
-  };
-
   const getDifficultyText = (difficulty: string) => {
     switch (difficulty) {
       case 'easy': return '쉬움';
       case 'medium': return '보통';
       case 'hard': return '어려움';
       default: return difficulty;
-    }
-  };
-
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case '플래티넘': return '#22d3ee';
-      case '골드': return '#fbbf24';
-      case '실버': return '#94a3b8';
-      case '브론즈': return '#a16207';
-      default: return '#6b7280';
     }
   };
 
@@ -167,7 +148,7 @@ export default function MypageContainer() {
         </S.ProfileAvatar>
         <S.ProfileInfo>
           <S.ProfileName>{userInfo?.name || "사용자"}</S.ProfileName>
-          <S.ProfileLevel color={getLevelColor(userStats.level)}>
+          <S.ProfileLevel>
             {userStats.level}
           </S.ProfileLevel>
           <S.ProfileRank>전체 랭킹 #{userStats.rank}</S.ProfileRank>
@@ -309,17 +290,17 @@ export default function MypageContainer() {
             <S.DifficultyStats>
               <S.StatsTitle>난이도별 해결 현황</S.StatsTitle>
               <S.DifficultyGrid>
-                <S.DifficultyCard color="#10b981">
+                <S.DifficultyCard>
                   <S.DifficultyLabel>쉬움</S.DifficultyLabel>
                   <S.DifficultyCount>{userStats.easyCount}</S.DifficultyCount>
                 </S.DifficultyCard>
 
-                <S.DifficultyCard color="#f59e0b">
+                <S.DifficultyCard>
                   <S.DifficultyLabel>보통</S.DifficultyLabel>
                   <S.DifficultyCount>{userStats.mediumCount}</S.DifficultyCount>
                 </S.DifficultyCard>
 
-                <S.DifficultyCard color="#ef4444">
+                <S.DifficultyCard>
                   <S.DifficultyLabel>어려움</S.DifficultyLabel>
                   <S.DifficultyCount>{userStats.hardCount}</S.DifficultyCount>
                 </S.DifficultyCard>
@@ -335,12 +316,12 @@ export default function MypageContainer() {
                 <S.HistoryItem key={problem.id}>
                   <S.HistoryHeader>
                     <S.HistoryTitle>{problem.title}</S.HistoryTitle>
-                    <S.HistoryDifficulty color={getDifficultyColor(problem.difficulty)}>
+                    <S.HistoryDifficulty>
                       {getDifficultyText(problem.difficulty)}
                     </S.HistoryDifficulty>
                   </S.HistoryHeader>
                   <S.HistoryMeta>
-                    <S.HistoryDate>해결일: {problem.solvedAt}</S.HistoryDate>
+                    <S.HistoryDate>답변일: {problem.solvedAt}</S.HistoryDate>
                     <S.HistoryScore>획득 점수: {problem.score}점</S.HistoryScore>
                   </S.HistoryMeta>
                 </S.HistoryItem>
