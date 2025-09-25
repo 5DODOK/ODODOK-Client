@@ -3,11 +3,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
 import * as S from "./style";
+import { useAuth } from '@/hooks/useAuth';
+import LoginButton from '@/components/auth/LoginButton';
 
 export default function Header() {
   const router = useRouter();
   const { isLoggedIn, userInfo, login, logout } = useUserStore();
   const [showDropdown, setShowDropdown] = useState(false);
+  const { isAdmin } = useAuth();
 
   const navItems = [
     { label: "문제 등록", path: "/register" },
@@ -18,16 +21,34 @@ export default function Header() {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    if (token && !isLoggedIn) {
-      const defaultUserInfo = {
-        name: "오주현",
-        avatar: ""
-      };
-      login(defaultUserInfo);
-    } else if (!token && isLoggedIn) {
+    const userStr = localStorage.getItem("user");
+    if (token && userStr && !isLoggedIn) {
+      try {
+        const user = JSON.parse(userStr);
+        login({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          profileImageUrl: user.profileImageUrl || user.avatar || ""
+        });
+      } catch {
+        // ignore
+      }
+    } else if ((!token || !userStr) && isLoggedIn) {
       logout();
     }
   }, [isLoggedIn, login, logout]);
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setShowDropdown(false);
+    };
+
+    if (showDropdown) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showDropdown]);
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -46,33 +67,28 @@ export default function Header() {
     setShowDropdown(false);
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
     logout();
     router.push("/");
-  };
-
-  const handleTestLogin = () => {
-    const testUserInfo = {
-      name: "오주현",
-      avatar: "https://upload.wikimedia.org/wikipedia/ko/4/4a/%EC%8B%A0%EC%A7%B1%EA%B5%AC.png"
-    };
-    localStorage.setItem("accessToken", "test-token");
-    login(testUserInfo);
   };
 
   const getUserInitials = (name: string) => {
     return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
   };
 
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setShowDropdown(false);
-    };
-
-    if (showDropdown) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [showDropdown]);
+  // 조건부 렌더링은 return에서만 처리
+  if (!isLoggedIn) {
+    return (
+      <S.Header>
+        <S.Inner>
+          <S.Logo onClick={() => handleNavigation("/")}>BUMAVIEW</S.Logo>
+          <S.NavWrap>
+            <LoginButton />
+          </S.NavWrap>
+        </S.Inner>
+      </S.Header>
+    );
+  }
 
   return (
     <S.Header>
@@ -81,8 +97,8 @@ export default function Header() {
         <S.NavWrap>
           <S.Nav>
             {navItems.map((item) => {
-              if (!isLoggedIn) return null;
-
+              // 관리자만 "문제 등록" 노출 예시
+              if (item.path === "/register" && !isAdmin(userInfo)) return null;
               return (
                 <S.NavItem
                   key={item.path}
@@ -93,37 +109,31 @@ export default function Header() {
               );
             })}
           </S.Nav>
-          {isLoggedIn ? (
-            <S.ProfileWrapper>
-              <S.ProfileContainer
-                onClick={handleProfileClick}
-                style={{ position: 'relative' }}
-              >
-                {userInfo.avatar ? (
-                  <S.Avatar src={userInfo.avatar} alt={userInfo.name} />
-                ) : (
-                  <S.AvatarInitials>
-                    {getUserInitials(userInfo.name)}
-                  </S.AvatarInitials>
-                )}
-                <S.UserName>{userInfo.name}</S.UserName>
-              </S.ProfileContainer>
-              {showDropdown && (
-                <S.DropdownMenu>
-                  <S.DropdownItem onClick={handleMyPageClick}>
-                    마이페이지
-                  </S.DropdownItem>
-                  <S.DropdownItem onClick={handleLogoutClick}>
-                    로그아웃
-                  </S.DropdownItem>
-                </S.DropdownMenu>
+          <S.ProfileWrapper>
+            <S.ProfileContainer
+              onClick={handleProfileClick}
+              style={{ position: 'relative' }}
+            >
+              {userInfo.profileImageUrl ? (
+                <S.Avatar src={userInfo.profileImageUrl} alt={userInfo.name} />
+              ) : (
+                <S.AvatarInitials>
+                  {getUserInitials(userInfo.name)}
+                </S.AvatarInitials>
               )}
-            </S.ProfileWrapper>
-          ) : (
-            <S.LoginButton onClick={handleTestLogin}>
-              로그인 (테스트)
-            </S.LoginButton>
-          )}
+              <S.UserName>{userInfo.name}</S.UserName>
+            </S.ProfileContainer>
+            {showDropdown && (
+              <S.DropdownMenu>
+                <S.DropdownItem onClick={handleMyPageClick}>
+                  마이페이지
+                </S.DropdownItem>
+                <S.DropdownItem onClick={handleLogoutClick}>
+                  로그아웃
+                </S.DropdownItem>
+              </S.DropdownMenu>
+            )}
+          </S.ProfileWrapper>
         </S.NavWrap>
       </S.Inner>
     </S.Header>

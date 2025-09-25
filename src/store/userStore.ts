@@ -2,8 +2,10 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface UserInfo {
+  id: number;
   name: string;
-  avatar: string;
+  email: string;
+  profileImageUrl: string;
 }
 
 interface UserState {
@@ -19,8 +21,10 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       isLoggedIn: false,
       userInfo: {
+        id: 0,
         name: '',
-        avatar: ''
+        email: '',
+        profileImageUrl: ''
       },
       login: (userInfo: UserInfo) =>
         set({
@@ -30,7 +34,7 @@ export const useUserStore = create<UserState>()(
       logout: () =>
         set({
           isLoggedIn: false,
-          userInfo: { name: '', avatar: '' }
+          userInfo: { id: 0, name: '', email: '', profileImageUrl: '' }
         }),
       updateUserInfo: (newUserInfo: Partial<UserInfo>) =>
         set((state) => ({

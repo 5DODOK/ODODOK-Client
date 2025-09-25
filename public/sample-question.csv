@@ -1,0 +1,4 @@
+question,difficulty,year,company_name,category_name, title
+컬렉션과 제네릭의 차이,MEDIUM,2024,네이버,기술면접, 제목1
+OOP의 4대 특성은?,EASY,2023,카카오,기술면접, 제목2
+협업에서 가장 중요하다고 생각하는 점은?,MEDIUM,2025,삼성,인성면접, 제목3

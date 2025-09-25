@@ -1,13 +1,16 @@
 "use client";
-import { useState, ChangeEvent, FormEvent, KeyboardEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import * as S from './style';
+import { useCreateQuestion } from '@/hooks/useCreateQuestion';
+import { useUserStore } from '@/store/userStore';
+import { useUploadQuestionCsv } from '@/hooks/useUploadQuestionCsv';
 
 interface ProblemFormData {
   title: string;
   content: string;
   category: string;
-  tags: string[];
   company: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
 }
 
 export default function RegisterContainer() {
@@ -16,34 +19,19 @@ export default function RegisterContainer() {
     title: '',
     content: '',
     category: '인성면접',
-    tags: [],
-    company: ''
+    company: '',
+    difficulty: 'MEDIUM'
   });
 
-  const [tagInput, setTagInput] = useState('');
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const { userInfo } = useUserStore();
+  const createQuestionMutation = useCreateQuestion();
+  const uploadQuestionCsvMutation = useUploadQuestionCsv();
 
   const handleInputChange = (field: keyof ProblemFormData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
-    }));
-  };
-
-  const handleAddTag = () => {
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, tagInput.trim()]
-      }));
-      setTagInput('');
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
     }));
   };
 
@@ -55,22 +43,74 @@ export default function RegisterContainer() {
         alert('CSV 파일을 선택해주세요.');
         return;
       }
-      // TODO: CSV 파일 업로드 API 호출
-      console.log('CSV 파일 업로드:', csvFile);
+      const token = localStorage.getItem('accessToken') || '';
+      uploadQuestionCsvMutation.mutate(
+        { file: csvFile, token },
+        {
+          onSuccess: (data) => {
+            alert('CSV 업로드가 완료되었습니다!\n' +
+              `총 ${data.summary.totalRows}건, 생성 ${data.summary.created}건, 수정 ${data.summary.updated}건, 건너뜀 ${data.summary.skipped}건`);
+            setCsvFile(null);
+          },
+          onError: (err: any) => {
+            if (err?.response?.data?.message) {
+              alert(err.response.data.message);
+            } else {
+              alert('CSV 업로드 중 오류가 발생했습니다.');
+            }
+          }
+        }
+      );
+      return;
     } else {
-      // TODO: 개별 문제 등록 API 호출
-      console.log('개별 문제 등록:', formData);
+      // 단건 문제 등록 (리액트 쿼리)
+      if (!formData.title.trim()) {
+        alert('문제 제목은 필수입니다.');
+        return;
+      }
+      if (formData.title.length > 200) {
+        alert('문제 제목은 200자 이내여야 합니다.');
+        return;
+      }
+      if (!userInfo) {
+        alert('로그인이 필요합니다.');
+        return;
+      }
+      const payload: any = {
+        question: formData.title,
+        difficulty: formData.difficulty,
+        year: undefined,
+        company_id: undefined,
+        category_id: undefined
+      };
+      if (formData.company) payload.company_id = 3; // TODO: 회사명->id 매핑 필요
+      if (formData.category) payload.category_id = 12; // TODO: 카테고리명->id 매핑 필요
+      if (formData.content) payload.content = formData.content;
+      const token = localStorage.getItem('accessToken') || '';
+      createQuestionMutation.mutate(
+        { payload, token },
+        {
+          onSuccess: () => {
+            alert('문제 등록이 완료되었습니다!');
+            setFormData({
+              title: '',
+              content: '',
+              category: '인성면접',
+              company: '',
+              difficulty: 'MEDIUM'
+            });
+            setCsvFile(null);
+          },
+          onError: (err: any) => {
+            if (err?.response?.data?.message) {
+              alert(err.response.data.message);
+            } else {
+              alert('문제 등록 중 오류가 발생했습니다.');
+            }
+          }
+        }
+      );
     }
-
-    // 성공 시 초기화
-    setFormData({
-      title: '',
-      content: '',
-      category: '인성면접',
-      tags: [],
-      company: ''
-    });
-    setCsvFile(null);
   };
 
   const handleCsvUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +141,14 @@ export default function RegisterContainer() {
           CSV 파일 등록
         </S.TypeButton>
       </S.TypeSelector>
+
+      {registrationType === 'csv' && (
+        <div style={{ marginBottom: 16 }}>
+          <a href="/sample-question.csv" download style={{ color: '#0070f3', textDecoration: 'underline', fontWeight: 500 }}>
+            샘플 파일 내려받기
+          </a>
+        </div>
+      )}
 
       <S.Form onSubmit={handleSubmit}>
         {registrationType === 'csv' ? (
@@ -167,34 +215,19 @@ export default function RegisterContainer() {
                   placeholder="예: 네이버, 카카오, 삼성"
                 />
               </S.FormGroup>
+
+              <S.FormGroup>
+                <S.Label>난이도</S.Label>
+                <S.Select
+                  value={formData.difficulty}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => handleInputChange('difficulty', e.target.value as 'EASY' | 'MEDIUM' | 'HARD')}
+                >
+                  <option value="EASY">EASY</option>
+                  <option value="MEDIUM">MEDIUM</option>
+                  <option value="HARD">HARD</option>
+                </S.Select>
+              </S.FormGroup>
             </S.FormRow>
-
-            <S.FormGroup>
-              <S.Label>태그</S.Label>
-              <S.TagInputWrapper>
-                <S.Input
-                  type="text"
-                  value={tagInput}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setTagInput(e.target.value)}
-                  placeholder="태그를 입력하고 추가 버튼을 클릭하세요"
-                  onKeyPress={(e: KeyboardEvent) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                />
-                <S.AddButton type="button" onClick={handleAddTag}>
-                  추가
-                </S.AddButton>
-              </S.TagInputWrapper>
-
-              <S.TagList>
-                {formData.tags.map((tag, index) => (
-                  <S.Tag key={index}>
-                    {tag}
-                    <S.TagRemoveButton onClick={() => handleRemoveTag(tag)}>
-                      ×
-                    </S.TagRemoveButton>
-                  </S.Tag>
-                ))}
-              </S.TagList>
-            </S.FormGroup>
           </S.IndividualSection>
         )}
 
