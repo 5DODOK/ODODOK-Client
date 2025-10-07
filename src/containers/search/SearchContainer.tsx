@@ -7,27 +7,29 @@ import { SearchQuestionParams } from '@/services/questionService';
 interface SearchFilters {
   year: string;
   company_name: string;
-  category: string;
-  sort: 'rel' | 'new' | 'old';
+  category_id: string;
+  interview_type: string;
+  sort: 'new' | 'old';
 }
 
 export default function SearchContainer() {
   const [filters, setFilters] = useState<SearchFilters>({
     year: '',
     company_name: '',
-    category: '',
-    sort: 'rel'
+    category_id: '',
+    interview_type: '',
+    sort: 'new'
   });
 
   const [page, setPage] = useState(1);
   const [searchParams, setSearchParams] = useState<SearchQuestionParams>({
     page: 1,
     size: 20,
-    sort: 'rel'
+    sort: 'new'
   });
 
   const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') || undefined : undefined;
-  
+
   const { data, isLoading, error } = useSearchQuestions({
     params: searchParams,
     token,
@@ -43,7 +45,7 @@ export default function SearchContainer() {
 
   const handleSearch = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     const params: SearchQuestionParams = {
       page: 1,
       size: 20,
@@ -61,8 +63,15 @@ export default function SearchContainer() {
       params.company_name = filters.company_name;
     }
 
-    if (filters.category) {
-      params.category = filters.category;
+    if (filters.category_id) {
+      const categoryId = parseInt(filters.category_id);
+      if (!isNaN(categoryId)) {
+        params.category_id = categoryId;
+      }
+    }
+
+    if (filters.interview_type) {
+      params.interview_type = filters.interview_type;
     }
 
     setPage(1);
@@ -73,14 +82,15 @@ export default function SearchContainer() {
     setFilters({
       year: '',
       company_name: '',
-      category: '',
-      sort: 'rel'
+      category_id: '',
+      interview_type: '',
+      sort: 'new'
     });
     setPage(1);
     setSearchParams({
       page: 1,
       size: 20,
-      sort: 'rel'
+      sort: 'new'
     });
   };
 
@@ -144,22 +154,38 @@ export default function SearchContainer() {
             <S.FilterGroup>
               <S.Label>카테고리</S.Label>
               <S.Select
-                value={filters.category}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFilterChange('category', e.target.value)}
+                value={filters.category_id}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFilterChange('category_id', e.target.value)}
+              >
+                <option value="">전체</option>
+                {data?.facets?.category?.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name} ({cat.count})
+                  </option>
+                ))}
+              </S.Select>
+            </S.FilterGroup>
+
+            <S.FilterGroup>
+              <S.Label>면접 유형</S.Label>
+              <S.Select
+                value={filters.interview_type}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFilterChange('interview_type', e.target.value)}
               >
                 <option value="">전체</option>
                 <option value="인성면접">인성면접</option>
                 <option value="기술면접">기술면접</option>
               </S.Select>
             </S.FilterGroup>
+          </S.FilterRow>
 
+          <S.FilterRow>
             <S.FilterGroup>
               <S.Label>정렬</S.Label>
               <S.Select
                 value={filters.sort}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFilterChange('sort', e.target.value as 'rel' | 'new' | 'old')}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFilterChange('sort', e.target.value as 'new' | 'old')}
               >
-                <option value="rel">정확도순</option>
                 <option value="new">최신순</option>
                 <option value="old">오래된순</option>
               </S.Select>
@@ -203,7 +229,8 @@ export default function SearchContainer() {
               <S.ProblemMeta>
                 <S.MetaItem>학년도: {question.year}</S.MetaItem>
                 <S.MetaItem>회사: {question.companyName}</S.MetaItem>
-                <S.MetaItem>카테고리 ID: {question.categoryId}</S.MetaItem>
+                <S.MetaItem>카테고리: {question.categoryName}</S.MetaItem>
+                <S.MetaItem>유형: {question.interviewType}</S.MetaItem>
                 <S.MetaItem>작성일: {new Date(question.createdAt).toLocaleDateString()}</S.MetaItem>
               </S.ProblemMeta>
 
@@ -217,7 +244,7 @@ export default function SearchContainer() {
 
         {data && data.total > 0 && (
           <S.Pagination>
-            <S.PageButton 
+            <S.PageButton
               onClick={() => handlePageChange(page - 1)}
               disabled={page === 1}
             >
@@ -226,7 +253,7 @@ export default function SearchContainer() {
             <S.PageInfo>
               {page} / {Math.ceil(data.total / (searchParams.size || 20))}
             </S.PageInfo>
-            <S.PageButton 
+            <S.PageButton
               onClick={() => handlePageChange(page + 1)}
               disabled={page >= Math.ceil(data.total / (searchParams.size || 20))}
             >

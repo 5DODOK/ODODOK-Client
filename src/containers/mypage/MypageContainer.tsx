@@ -144,7 +144,7 @@ export default function MypageContainer() {
 
       <S.ProfileHeader>
         <S.ProfileAvatar>
-          <S.AvatarImage src={userInfo?.avatar || "https://i.imgur.com/YjvKgkW.png"} alt={userInfo?.name || "사용자"} />
+          <S.AvatarImage src={userInfo?.profileImageUrl || "https://i.imgur.com/YjvKgkW.png"} alt={userInfo?.name || "사용자"} />
         </S.ProfileAvatar>
         <S.ProfileInfo>
           <S.ProfileName>{userInfo?.name || "사용자"}</S.ProfileName>

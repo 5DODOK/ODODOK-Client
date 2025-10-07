@@ -32,8 +32,9 @@ export interface SearchQuestionParams {
   year?: number;
   company_id?: number;
   company_name?: string;
-  category?: string;
-  sort?: 'rel' | 'new' | 'old';
+  category_id?: number;
+  interview_type?: string;
+  sort?: 'new' | 'old';
   page?: number;
   size?: number;
 }
@@ -45,6 +46,8 @@ export interface SearchQuestionResult {
   year: number;
   companyName: string;
   categoryId: number;
+  categoryName: string;
+  interviewType: string;
   difficulty: number;
   difficultyLabel: 'EASY' | 'MEDIUM' | 'HARD';
   createdAt: string;
@@ -52,9 +55,11 @@ export interface SearchQuestionResult {
 
 export interface SearchQuestionResponse {
   query: {
-    year?: number;
-    company_name?: string;
-    sort?: string;
+    category_id: number | null;
+    year: number | null;
+    company_name: string | null;
+    interview_type: string | null;
+    sort: string;
   };
   page: number;
   size: number;
@@ -62,7 +67,9 @@ export interface SearchQuestionResponse {
   results: SearchQuestionResult[];
   facets: {
     year: Array<{ value: number; count: number }>;
+    interview_type: Array<{ name: string; count: number }>;
     company: Array<{ id: number; name: string; count: number }>;
+    category: Array<{ id: number; name: string; count: number }>;
   };
 }
 
