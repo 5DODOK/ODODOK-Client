@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import customAxios from '@/services/customAxios';
 import { useUserStore } from '@/store/userStore';
+import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
 
 export default function OAuthCallbackPage() {
-  const router = useRouter();
+  const router = useRouterWithNProgress();
   const searchParams = useSearchParams();
   const [error, setError] = useState('');
   const login = useUserStore((state) => state.login);

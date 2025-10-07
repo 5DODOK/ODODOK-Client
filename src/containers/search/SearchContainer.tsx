@@ -1,5 +1,6 @@
 "use client";
 import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
 import * as S from './style';
 import { useSearchQuestions } from '@/hooks/useSearchQuestions';
 import { SearchQuestionParams } from '@/services/questionService';
@@ -13,6 +14,7 @@ interface SearchFilters {
 }
 
 export default function SearchContainer() {
+  const router = useRouterWithNProgress();
   const [filters, setFilters] = useState<SearchFilters>({
     year: '',
     company_name: '',
@@ -235,8 +237,15 @@ export default function SearchContainer() {
               </S.ProblemMeta>
 
               <S.ProblemActions>
-                <S.ActionButton primary>질문 보기</S.ActionButton>
-                <S.ActionButton>답변하기</S.ActionButton>
+                <S.ActionButton
+                  primary
+                  onClick={() => {
+                    localStorage.setItem('currentQuestion', JSON.stringify(question));
+                    router.push(`/question/${question.id}`);
+                  }}
+                >
+                  질문 보기
+                </S.ActionButton>
               </S.ProblemActions>
             </S.ProblemCard>
           ))}

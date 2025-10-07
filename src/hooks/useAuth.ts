@@ -1,10 +1,10 @@
-import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import customAxios from '../services/customAxios';
 import { useUserStore } from '@/store/userStore';
+import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
 
 export function useAuth() {
-  const router = useRouter();
+  const router = useRouterWithNProgress();
   const { userInfo, isLoggedIn: storeIsLoggedIn, login, logout } = useUserStore();
 
   // 1단계: Google 인증 URL 받아서 이동

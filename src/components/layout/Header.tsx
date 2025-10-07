@@ -1,13 +1,13 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
 import * as S from "./style";
 import { useAuth } from '@/hooks/useAuth';
 import LoginButton from '@/components/auth/LoginButton';
+import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
 
 export default function Header() {
-  const router = useRouter();
+  const router = useRouterWithNProgress();
   const { isLoggedIn, userInfo, login, logout } = useUserStore();
   const [showDropdown, setShowDropdown] = useState(false);
   const { isAdmin } = useAuth();
