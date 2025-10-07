@@ -55,7 +55,7 @@ export default function HomeContainer({ isAdmin = false }: Props) {
               <div>
                 <S.FeatureTitle>맞춤 추천 · 북마크</S.FeatureTitle>
                 <S.FeatureDesc>
-                  관심 태그·직무 기반 추천 큐레이션. 북마크로 리스트를 만들고, 복습 알림으로 학습 루틴을 유지합니다.
+                  관심 직무 기반 추천 큐레이션. 북마크로 리스트를 만들고, 복습 알림으로 학습 루틴을 유지합니다.
                 </S.FeatureDesc>
               </div>
             </S.FeatureCard>
@@ -64,7 +64,7 @@ export default function HomeContainer({ isAdmin = false }: Props) {
               <div>
                 <S.FeatureTitle>검색 · 필터 · 랭크</S.FeatureTitle>
                 <S.FeatureDesc>
-                  태그·직무·회사·난이도 필터로 원하는 질문을 찾고, 기록·스트릭·랭크로 성장 데이터를 확인합니다.
+                  직무·회사·난이도 필터로 원하는 질문을 찾고, 기록·스트릭·랭크로 성장 데이터를 확인합니다.
                 </S.FeatureDesc>
               </div>
             </S.FeatureCard>

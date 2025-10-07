@@ -27,3 +27,53 @@ export async function uploadQuestionCsv(file: File, token: string, dryRun = fals
   });
   return res.data;
 }
+
+export interface SearchQuestionParams {
+  year?: number;
+  company_id?: number;
+  company_name?: string;
+  category?: string;
+  sort?: 'rel' | 'new' | 'old';
+  page?: number;
+  size?: number;
+}
+
+export interface SearchQuestionResult {
+  type: 'question';
+  id: number;
+  question: string;
+  year: number;
+  companyName: string;
+  categoryId: number;
+  difficulty: number;
+  difficultyLabel: 'EASY' | 'MEDIUM' | 'HARD';
+  createdAt: string;
+}
+
+export interface SearchQuestionResponse {
+  query: {
+    year?: number;
+    company_name?: string;
+    sort?: string;
+  };
+  page: number;
+  size: number;
+  total: number;
+  results: SearchQuestionResult[];
+  facets: {
+    year: Array<{ value: number; count: number }>;
+    company: Array<{ id: number; name: string; count: number }>;
+  };
+}
+
+export async function searchQuestions(params: SearchQuestionParams, token?: string) {
+  const config = token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : {};
+
+  const res = await customAxios.get<SearchQuestionResponse>('/search', {
+    params,
+    ...config,
+  });
+  return res.data;
+}

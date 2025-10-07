@@ -163,68 +163,6 @@ export const Select = styled.select`
   }
 `;
 
-export const TagInputWrapper = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  
-  input {
-    flex: 1;
-  }
-`;
-
-export const AddButton = styled.button`
-  padding: 0.75rem 1rem;
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  
-  &:hover {
-    background-color: #2563eb;
-  }
-  
-  &:active {
-    transform: translateY(1px);
-  }
-`;
-
-export const TagList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-`;
-
-export const Tag = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background-color: #f3f4f6;
-  color: #374151;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-`;
-
-export const TagRemoveButton = styled.button`
-  background: none;
-  border: none;
-  color: #6b7280;
-  cursor: pointer;
-  font-size: 1.2rem;
-  line-height: 1;
-  padding: 0;
-  
-  &:hover {
-    color: #ef4444;
-  }
-`;
-
 export const SubmitButton = styled.button`
   padding: 1rem 2rem;
   background-color: #10b981;

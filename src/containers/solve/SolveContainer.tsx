@@ -7,7 +7,6 @@ interface Problem {
   title: string;
   content: string;
   category: string;
-  tags: string[];
   company: string;
   createdAt: string;
 }
@@ -45,7 +44,6 @@ export default function SolveContainer() {
       title: "자기소개를 해주세요",
       content: "간단하게 자기소개를 해주세요. 본인의 강점과 지원동기를 포함하여 답변해주세요.",
       category: "인성면접",
-      tags: ["자기소개", "강점"],
       company: "네이버",
       createdAt: "2024-01-15"
     },
@@ -54,7 +52,6 @@ export default function SolveContainer() {
       title: "JavaScript의 호이스팅에 대해 설명하세요",
       content: "JavaScript의 호이스팅(Hoisting) 개념과 var, let, const의 차이점에 대해 설명해주세요.",
       category: "기술면접",
-      tags: ["JavaScript", "호이스팅"],
       company: "카카오",
       createdAt: "2024-01-14"
     },
@@ -64,7 +61,6 @@ export default function SolveContainer() {
       title: `면접 질문 ${index + 3}`,
       content: `이것은 ${index + 3}번째 면접 질문입니다. 자세한 답변을 작성해주세요.`,
       category: index % 2 === 0 ? "인성면접" : "기술면접",
-      tags: ["면접", "질문"],
       company: companies[index % companies.length].name,
       createdAt: `2024-01-${10 + index}`
     }))
@@ -92,7 +88,6 @@ export default function SolveContainer() {
         title: `${category} 문제 ${filteredProblems.length + 1}`,
         content: `${category} 관련 면접 질문입니다. 자세한 답변을 작성해주세요.`,
         category,
-        tags: [category],
         company: "일반",
         createdAt: "2024-01-15"
       });

@@ -162,7 +162,7 @@ export default function RegisterContainer() {
                 required
               />
               <S.FileHelperText>
-                CSV 형식: 제목, 내용, 카테고리(인성면접/기술면접), 태그(콤마로 구분), 회사명
+                CSV 형식: 제목, 내용, 카테고리(인성면접/기술면접), 회사명
               </S.FileHelperText>
               {csvFile && (
                 <S.SelectedFile>

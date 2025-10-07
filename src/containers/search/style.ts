@@ -206,22 +206,6 @@ export const MetaItem = styled.div`
   color: #6b7280;
 `;
 
-export const TagList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-`;
-
-export const Tag = styled.span`
-  background-color: #f3f4f6;
-  color: #374151;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
-`;
-
 export const ProblemActions = styled.div`
   display: flex;
   gap: 0.5rem;
@@ -246,4 +230,50 @@ export const ActionButton = styled.button<{ primary?: boolean }>`
     background-color: ${props => props.primary ? '#059669' : '#e5e7eb'};
     transform: translateY(-1px);
   }
+`;
+
+export const ErrorMessage = styled.div`
+  padding: 1.5rem;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 1.5rem;
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem 0;
+`;
+
+export const PageButton = styled.button`
+  padding: 0.5rem 1rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: #059669;
+    transform: translateY(-1px);
+  }
+  
+  &:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+  }
+`;
+
+export const PageInfo = styled.div`
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 500;
 `;
