@@ -385,3 +385,93 @@ export const EmptyStateText = styled.div`
   font-size: 1.1rem;
   font-weight: 500;
 `;
+
+// 추가 스타일 컴포넌트
+export const SelectGroup = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+export const SelectLabel = styled.label`
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+`;
+
+export const Select = styled.select`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  &:hover {
+    border-color: #d1d5db;
+  }
+`;
+
+export const FeedbackSection = styled.div`
+  background-color: #f0f9ff;
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+`;
+
+export const FeedbackTitle = styled.h4`
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 1rem;
+`;
+
+export const FeedbackText = styled.p`
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  
+  strong {
+    color: #1e40af;
+  }
+`;
+
+export const ResultStats = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+export const StatItem = styled.div`
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
+`;
+
+export const StatLabel = styled.div`
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+`;
+
+export const StatValue = styled.div`
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+`;

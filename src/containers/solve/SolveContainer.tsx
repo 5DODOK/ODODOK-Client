@@ -1,288 +1,323 @@
 "use client";
-import { useState, ChangeEvent } from 'react';
+import { useState, useEffect } from 'react';
+import { useProblems } from '@/hooks/useProblems';
+import { useFeedback } from '@/hooks/useFeedback';
+import { useSubmitAnswers } from '@/hooks/useSubmitAnswers';
+import { ProblemQuestion, AnswerItem } from '@/services/problemService';
 import * as S from './style';
 
-interface Problem {
-  id: number;
-  title: string;
-  content: string;
-  category: string;
-  company: string;
-  createdAt: string;
-}
+// 카테고리 매핑 (name -> id)
+const CATEGORY_MAP: Record<string, number> = {
+  'back': 1,
+  'front': 2,
+  'design': 3,
+  'security': 4,
+};
 
-interface Company {
-  id: number;
-  name: string;
-  problemCount: number;
-}
+// 회사 매핑 (name -> id)
+const COMPANY_MAP: Record<string, number> = {
+  '마이다스IT': 1,
+  '신한은행': 2,
+  '블루바이저': 3,
+  '아이디노': 4,
+  '니더': 5,
+  '라이너': 6,
+  '핀다': 7,
+  '브랜치앤바운드': 8,
+  '아키스케치': 9,
+  '샌드버그': 10,
+  '후아': 11,
+  '쏘카': 12,
+  '씨메스': 13,
+  '똑개': 14,
+  '더스팟': 15,
+  '지오영': 16,
+  '라포랩스': 17,
+  '서플라이스': 18,
+  '잉카인터넷': 19,
+  '미르니': 20,
+  '드래프타입': 21,
+  '달파': 22,
+  '사이버다임': 23,
+  'U2SR': 24,
+  '우리웍스': 25,
+  '큐오티': 26,
+  '바카티오': 27,
+  '리얼시큐': 28,
+  '썬컴': 29,
+  '공감오래컨텐츠': 59,
+};
 
 export default function SolveContainer() {
-  const [selectedMode, setSelectedMode] = useState<'company' | 'category' | null>(null);
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [problems, setProblems] = useState<Problem[]>([]);
-  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  // 문제 선택 state
+  const [category, setCategory] = useState('');
+  const [company, setCompany] = useState('');
+  const [hasStarted, setHasStarted] = useState(false);
+
+  // 문제 풀이 state
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<Map<number, string>>(new Map());
   const [currentAnswer, setCurrentAnswer] = useState('');
-  const [isCompleted, setIsCompleted] = useState(false);
+  const [questionStartTime, setQuestionStartTime] = useState<number>(0);
+  const [timesSpent, setTimesSpent] = useState<Map<number, number>>(new Map());
+  const [totalStartTime, setTotalStartTime] = useState<number>(0);
 
-  // 예시 회사 데이터
-  const companies: Company[] = [
-    { id: 1, name: "네이버", problemCount: 25 },
-    { id: 2, name: "카카오", problemCount: 30 },
-    { id: 3, name: "삼성전자", problemCount: 22 },
-    { id: 4, name: "LG전자", problemCount: 18 },
-    { id: 5, name: "SK하이닉스", problemCount: 15 },
-    { id: 6, name: "현대자동차", problemCount: 20 }
-  ];
+  // 피드백 state
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [currentFeedback, setCurrentFeedback] = useState<{ feedback: string; additionalTip: string } | null>(null);
 
-  // 예시 문제 데이터 (10문제)
-  const sampleProblems: Problem[] = [
-    {
-      id: 1,
-      title: "자기소개를 해주세요",
-      content: "간단하게 자기소개를 해주세요. 본인의 강점과 지원동기를 포함하여 답변해주세요.",
-      category: "인성면접",
-      company: "네이버",
-      createdAt: "2024-01-15"
-    },
-    {
-      id: 2,
-      title: "JavaScript의 호이스팅에 대해 설명하세요",
-      content: "JavaScript의 호이스팅(Hoisting) 개념과 var, let, const의 차이점에 대해 설명해주세요.",
-      category: "기술면접",
-      company: "카카오",
-      createdAt: "2024-01-14"
-    },
-    // 나머지 8문제를 위한 더미 데이터
-    ...Array.from({ length: 8 }, (_, index) => ({
-      id: index + 3,
-      title: `면접 질문 ${index + 3}`,
-      content: `이것은 ${index + 3}번째 면접 질문입니다. 자세한 답변을 작성해주세요.`,
-      category: index % 2 === 0 ? "인성면접" : "기술면접",
-      company: companies[index % companies.length].name,
-      createdAt: `2024-01-${10 + index}`
-    }))
-  ];
+  // 제출 완료 state
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitResult, setSubmitResult] = useState<any>(null);
 
-  const handleCompanySelect = (company: Company) => {
-    setSelectedCompany(company);
-    // TODO: 회사별 문제 10개 가져오기 API 호출
-    const filteredProblems = sampleProblems.slice(0, 10);
-    setProblems(filteredProblems);
-    setCurrentProblemIndex(0);
-    setUserAnswers(new Array(10).fill(''));
-    setCurrentAnswer('');
-    setIsCompleted(false);
+  // API 파라미터 (ID로 변환)
+  const categoryId = category ? CATEGORY_MAP[category] : undefined;
+  const companyId = company ? COMPANY_MAP[company] : undefined;
+
+  // API 훅
+  const { data: problemsData, isLoading } = useProblems({
+    category: categoryId,
+    company: companyId
+  });
+  const feedbackMutation = useFeedback();
+  const submitMutation = useSubmitAnswers();
+
+  const questions = problemsData?.questions || [];
+  const currentQuestion = questions[currentQuestionIndex];
+
+  // 문제 시작
+  const handleStart = () => {
+    if (!category && !company) {
+      alert('카테고리 또는 회사 중 하나를 선택해주세요');
+      return;
+    }
+    setHasStarted(true);
+    setTotalStartTime(Date.now());
+    setQuestionStartTime(Date.now());
   };
 
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
-    // TODO: 카테고리별 문제 10개 가져오기 API 호출
-    const filteredProblems = sampleProblems.filter(p => p.category === category).slice(0, 10);
-    // 10개가 안 되면 더미 데이터로 채우기
-    while (filteredProblems.length < 10) {
-      filteredProblems.push({
-        id: filteredProblems.length + 100,
-        title: `${category} 문제 ${filteredProblems.length + 1}`,
-        content: `${category} 관련 면접 질문입니다. 자세한 답변을 작성해주세요.`,
-        category,
-        company: "일반",
-        createdAt: "2024-01-15"
+  // 답변 제출 및 피드백 받기
+  const handleSubmitAnswer = async () => {
+    if (!currentAnswer.trim()) {
+      alert('답변을 입력해주세요');
+      return;
+    }
+
+    // 시간 기록
+    const timeSpent = Math.floor((Date.now() - questionStartTime) / 1000);
+    setTimesSpent(new Map(timesSpent.set(currentQuestion.questionId, timeSpent)));
+    setAnswers(new Map(answers.set(currentQuestion.questionId, currentAnswer)));
+
+    // 피드백 요청
+    try {
+      const feedback = await feedbackMutation.mutateAsync({
+        userAnswer: currentAnswer,
+        question: currentQuestion.question,
       });
+      setCurrentFeedback(feedback);
+      setShowFeedback(true);
+    } catch (error) {
+      console.error('피드백 요청 실패:', error);
+      alert('피드백을 받는데 실패했습니다');
     }
-    setProblems(filteredProblems);
-    setCurrentProblemIndex(0);
-    setUserAnswers(new Array(10).fill(''));
+  };
+
+  // 다음 문제로
+  const handleNext = () => {
+    setShowFeedback(false);
+    setCurrentFeedback(null);
     setCurrentAnswer('');
-    setIsCompleted(false);
-  };
 
-  const handleAnswerChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const newAnswer = e.target.value;
-    setCurrentAnswer(newAnswer);
-
-    // 현재 문제의 답변을 저장
-    const newAnswers = [...userAnswers];
-    newAnswers[currentProblemIndex] = newAnswer;
-    setUserAnswers(newAnswers);
-  };
-
-  const handleNextProblem = () => {
-    if (currentProblemIndex < problems.length - 1) {
-      const nextIndex = currentProblemIndex + 1;
-      setCurrentProblemIndex(nextIndex);
-      setCurrentAnswer(userAnswers[nextIndex] || '');
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setQuestionStartTime(Date.now());
+    } else {
+      // 마지막 문제면 최종 제출
+      handleFinalSubmit();
     }
   };
 
-  const handlePrevProblem = () => {
-    if (currentProblemIndex > 0) {
-      const prevIndex = currentProblemIndex - 1;
-      setCurrentProblemIndex(prevIndex);
-      setCurrentAnswer(userAnswers[prevIndex] || '');
+  // 최종 제출
+  const handleFinalSubmit = async () => {
+    const totalTimeSpent = Math.floor((Date.now() - totalStartTime) / 1000);
+
+    const answersList: AnswerItem[] = questions.map((q) => ({
+      questionId: q.questionId,
+      answer: answers.get(q.questionId) || '',
+      timeSpent: timesSpent.get(q.questionId) || 0,
+    }));
+
+    try {
+      const result = await submitMutation.mutateAsync({
+        answers: answersList,
+        totalTimeSpent,
+        submittedAt: new Date().toISOString(),
+      });
+      setSubmitResult(result);
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('최종 제출 실패:', error);
+      alert('제출에 실패했습니다');
     }
   };
 
-  const handleSubmitAll = async () => {
-    // TODO: 모든 답변 제출 API 호출
-    console.log('모든 답변 제출:', {
-      company: selectedCompany?.name,
-      category: selectedCategory,
-      answers: userAnswers
-    });
+  // 제출 완료 화면
+  if (isSubmitted && submitResult) {
+    return (
+      <S.Container>
+        <S.CompletionSection>
+          <S.CompletionIcon>�</S.CompletionIcon>
+          <S.CompletionTitle>{submitResult.message}</S.CompletionTitle>
+          <S.ResultStats>
+            <S.StatItem>
+              <S.StatLabel>점수</S.StatLabel>
+              <S.StatValue>{submitResult.score}점</S.StatValue>
+            </S.StatItem>
+            <S.StatItem>
+              <S.StatLabel>정답 수</S.StatLabel>
+              <S.StatValue>{submitResult.correctAnswers} / {questions.length}</S.StatValue>
+            </S.StatItem>
+            <S.StatItem>
+              <S.StatLabel>획득 포인트</S.StatLabel>
+              <S.StatValue>{submitResult.pointsEarned}P</S.StatValue>
+            </S.StatItem>
+            <S.StatItem>
+              <S.StatLabel>랭킹</S.StatLabel>
+              <S.StatValue>{submitResult.rank}위</S.StatValue>
+            </S.StatItem>
+          </S.ResultStats>
+          <S.NavigationButtons>
+            <S.NavButton onClick={() => window.location.reload()}>다시 풀기</S.NavButton>
+            <S.NavButton primary onClick={() => window.location.href = '/rank'}>랭킹 보기</S.NavButton>
+          </S.NavigationButtons>
+        </S.CompletionSection>
+      </S.Container>
+    );
+  }
 
-    setIsCompleted(true);
-  };
+  // 문제 풀이 화면
+  if (hasStarted && questions.length > 0) {
+    return (
+      <S.Container>
+        <S.SolvingHeader>
+          <S.ProgressInfo>
+            문제 {currentQuestionIndex + 1} / {questions.length}
+          </S.ProgressInfo>
+          <S.SolvingInfo>
+            {Math.floor((Date.now() - questionStartTime) / 1000)}초 경과
+          </S.SolvingInfo>
+        </S.SolvingHeader>
 
-  const handleReset = () => {
-    setSelectedMode(null);
-    setSelectedCompany(null);
-    setSelectedCategory('');
-    setProblems([]);
-    setCurrentProblemIndex(0);
-    setUserAnswers([]);
-    setCurrentAnswer('');
-    setIsCompleted(false);
-  };
+        <S.ProblemCard>
+          <S.ProblemHeader>
+            <S.ProblemTitle>Q{currentQuestionIndex + 1}</S.ProblemTitle>
+          </S.ProblemHeader>
+          <S.ProblemContent>{currentQuestion?.question}</S.ProblemContent>
 
+          <S.AnswerSection>
+            <S.AnswerLabel>답변</S.AnswerLabel>
+            <S.AnswerTextarea
+              value={currentAnswer}
+              onChange={(e) => setCurrentAnswer(e.target.value)}
+              placeholder="답변을 입력하세요..."
+              disabled={showFeedback}
+            />
+          </S.AnswerSection>
+
+          {!showFeedback && (
+            <S.NavigationButtons>
+              <S.NavButton onClick={handleSubmitAnswer} disabled={!currentAnswer.trim()} primary>
+                답변 제출
+              </S.NavButton>
+            </S.NavigationButtons>
+          )}
+
+          {showFeedback && currentFeedback && (
+            <S.FeedbackSection>
+              <S.FeedbackTitle>💡 AI 피드백</S.FeedbackTitle>
+              <S.FeedbackText>{currentFeedback.feedback}</S.FeedbackText>
+              {currentFeedback.additionalTip && (
+                <S.FeedbackText>
+                  <strong>TIP:</strong> {currentFeedback.additionalTip}
+                </S.FeedbackText>
+              )}
+              <S.NavigationButtons>
+                <S.NavButton primary onClick={handleNext}>
+                  {currentQuestionIndex < questions.length - 1 ? '다음 문제' : '제출하기'}
+                </S.NavButton>
+              </S.NavigationButtons>
+            </S.FeedbackSection>
+          )}
+        </S.ProblemCard>
+      </S.Container>
+    );
+  }
+
+  // 시작 화면
   return (
     <S.Container>
       <S.PageTitle>문제 풀기</S.PageTitle>
+      <S.SelectionSection>
+        <S.SectionTitle>
+          카테고리 또는 회사를 선택하면 총 10문제가 제공됩니다.
+          <br />
+          각 문제마다 AI 피드백을 받을 수 있습니다.
+        </S.SectionTitle>
 
-      {!selectedMode ? (
-        // 모드 선택 화면
-        <S.ModeSelection>
-          <S.ModeCard onClick={() => setSelectedMode('company')}>
-            <S.ModeIcon>🏢</S.ModeIcon>
-            <S.ModeTitle>회사별 문제</S.ModeTitle>
-            <S.ModeDescription>특정 회사의 면접 문제 10개를 연속으로 풉니다</S.ModeDescription>
-          </S.ModeCard>
+        <S.SelectGroup>
+          <S.SelectLabel>카테고리 (선택)</S.SelectLabel>
+          <S.Select value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option value="">선택하지 않음</option>
+            <option value="back">백엔드</option>
+            <option value="front">프론트엔드</option>
+            <option value="design">디자인</option>
+            <option value="security">보안</option>
+          </S.Select>
+        </S.SelectGroup>
 
-          <S.ModeCard onClick={() => setSelectedMode('category')}>
-            <S.ModeIcon>📝</S.ModeIcon>
-            <S.ModeTitle>카테고리별 문제</S.ModeTitle>
-            <S.ModeDescription>인성면접 또는 기술면접 문제 10개를 연속으로 풉니다</S.ModeDescription>
-          </S.ModeCard>
-        </S.ModeSelection>
-      ) : selectedMode === 'company' && !selectedCompany ? (
-        // 회사 선택 화면
-        <S.SelectionSection>
-          <S.BackButton onClick={() => setSelectedMode(null)}>← 뒤로가기</S.BackButton>
-          <S.SectionTitle>회사를 선택하세요</S.SectionTitle>
-          <S.CompanyGrid>
-            {companies.map((company) => (
-              <S.CompanyCard key={company.id} onClick={() => handleCompanySelect(company)}>
-                <S.CompanyName>{company.name}</S.CompanyName>
-                <S.CompanyInfo>{company.problemCount}개 문제</S.CompanyInfo>
-              </S.CompanyCard>
-            ))}
-          </S.CompanyGrid>
-        </S.SelectionSection>
-      ) : selectedMode === 'category' && !selectedCategory ? (
-        // 카테고리 선택 화면
-        <S.SelectionSection>
-          <S.BackButton onClick={() => setSelectedMode(null)}>← 뒤로가기</S.BackButton>
-          <S.SectionTitle>카테고리를 선택하세요</S.SectionTitle>
-          <S.CategoryGrid>
-            <S.CategoryCard onClick={() => handleCategorySelect('인성면접')}>
-              <S.CategoryIcon>👥</S.CategoryIcon>
-              <S.CategoryTitle>인성면접</S.CategoryTitle>
-              <S.CategoryDescription>인성, 경험, 가치관 관련 질문</S.CategoryDescription>
-            </S.CategoryCard>
+        <S.SelectGroup>
+          <S.SelectLabel>회사 (선택)</S.SelectLabel>
+          <S.Select value={company} onChange={(e) => setCompany(e.target.value)}>
+            <option value="">선택하지 않음</option>
+            <option value="마이다스IT">마이다스IT</option>
+            <option value="신한은행">신한은행</option>
+            <option value="블루바이저">블루바이저</option>
+            <option value="아이디노">아이디노</option>
+            <option value="니더">니더</option>
+            <option value="라이너">라이너</option>
+            <option value="핀다">핀다</option>
+            <option value="브랜치앤바운드">브랜치앤바운드</option>
+            <option value="아키스케치">아키스케치</option>
+            <option value="샌드버그">샌드버그</option>
+            <option value="후아">후아</option>
+            <option value="쏘카">쏘카</option>
+            <option value="씨메스">씨메스</option>
+            <option value="똑개">똑개</option>
+            <option value="더스팟">더스팟</option>
+            <option value="지오영">지오영</option>
+            <option value="라포랩스">라포랩스</option>
+            <option value="서플라이스">서플라이스</option>
+            <option value="잉카인터넷">잉카인터넷</option>
+            <option value="미르니">미르니</option>
+            <option value="드래프타입">드래프타입</option>
+            <option value="달파">달파</option>
+            <option value="사이버다임">사이버다임</option>
+            <option value="U2SR">U2SR</option>
+            <option value="우리웍스">우리웍스</option>
+            <option value="큐오티">큐오티</option>
+            <option value="바카티오">바카티오</option>
+            <option value="리얼시큐">리얼시큐</option>
+            <option value="썬컴">썬컴</option>
+            <option value="공감오래컨텐츠">공감오래컨텐츠</option>
+          </S.Select>
+        </S.SelectGroup>
 
-            <S.CategoryCard onClick={() => handleCategorySelect('기술면접')}>
-              <S.CategoryIcon>💻</S.CategoryIcon>
-              <S.CategoryTitle>기술면접</S.CategoryTitle>
-              <S.CategoryDescription>기술 지식, 코딩, 문제해결 관련 질문</S.CategoryDescription>
-            </S.CategoryCard>
-          </S.CategoryGrid>
-        </S.SelectionSection>
-      ) : problems.length > 0 ? (
-        // 문제 풀이 화면
-        <S.SolvingSection>
-          <S.SolvingHeader>
-            <S.BackButton onClick={handleReset}>← 처음으로</S.BackButton>
-            <S.SolvingInfo>
-              <S.SolvingTitle>
-                {selectedCompany ? selectedCompany.name : selectedCategory}
-              </S.SolvingTitle>
-              <S.ProgressInfo>
-                {currentProblemIndex + 1} / 10
-              </S.ProgressInfo>
-            </S.SolvingInfo>
-          </S.SolvingHeader>
-
-          <S.ProgressBar>
-            <S.ProgressFill width={(currentProblemIndex + 1) * 10} />
-          </S.ProgressBar>
-
-          {!isCompleted ? (
-            <S.ProblemSection>
-              <S.ProblemCard>
-                <S.ProblemHeader>
-                  <S.ProblemTitle>{problems[currentProblemIndex]?.title}</S.ProblemTitle>
-                  <S.ProblemMeta>
-                    {problems[currentProblemIndex]?.category} • {problems[currentProblemIndex]?.company}
-                  </S.ProblemMeta>
-                </S.ProblemHeader>
-
-                <S.ProblemContent>
-                  {problems[currentProblemIndex]?.content}
-                </S.ProblemContent>
-
-                <S.AnswerSection>
-                  <S.AnswerLabel>답변</S.AnswerLabel>
-                  <S.AnswerTextarea
-                    value={currentAnswer}
-                    onChange={handleAnswerChange}
-                    placeholder="답변을 작성해주세요..."
-                  />
-                </S.AnswerSection>
-
-                <S.NavigationButtons>
-                  <S.NavButton
-                    onClick={handlePrevProblem}
-                    disabled={currentProblemIndex === 0}
-                  >
-                    이전 문제
-                  </S.NavButton>
-
-                  {currentProblemIndex === problems.length - 1 ? (
-                    <S.SubmitButton onClick={handleSubmitAll}>
-                      모든 답변 제출
-                    </S.SubmitButton>
-                  ) : (
-                    <S.NavButton
-                      onClick={handleNextProblem}
-                      primary
-                    >
-                      다음 문제
-                    </S.NavButton>
-                  )}
-                </S.NavigationButtons>
-              </S.ProblemCard>
-            </S.ProblemSection>
-          ) : (
-            <S.CompletionSection>
-              <S.CompletionIcon>🎉</S.CompletionIcon>
-              <S.CompletionTitle>모든 문제를 완료했습니다!</S.CompletionTitle>
-              <S.CompletionMessage>
-                {selectedCompany ? selectedCompany.name : selectedCategory} 문제 10개를 모두 해결했습니다.
-              </S.CompletionMessage>
-              <S.RestartButton onClick={handleReset}>
-                다시 풀기
-              </S.RestartButton>
-            </S.CompletionSection>
-          )}
-        </S.SolvingSection>
-      ) : (
-        <S.EmptyState>
-          <S.EmptyStateIcon>📝</S.EmptyStateIcon>
-          <S.EmptyStateText>문제를 불러오는 중입니다...</S.EmptyStateText>
-        </S.EmptyState>
-      )}
+        <S.NavigationButtons>
+          <S.NavButton primary onClick={handleStart} disabled={(!category && !company) || isLoading}>
+            {isLoading ? '문제 불러오는 중...' : '시작하기'}
+          </S.NavButton>
+        </S.NavigationButtons>
+      </S.SelectionSection>
     </S.Container>
   );
 }
