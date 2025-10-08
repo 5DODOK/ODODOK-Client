@@ -271,76 +271,78 @@ export default function SolveContainer() {
 
   // 시작 화면
   return (
-    <S.Container>
-      <S.PageTitle>문제 풀기</S.PageTitle>
-      <S.SelectionSection>
-        <S.SectionTitle>
-          카테고리 또는 회사를 선택하면 총 10문제가 제공됩니다.
-          <br />
-          각 문제마다 AI 피드백을 받을 수 있습니다.
-        </S.SectionTitle>
+    <S.PageWrapper>
+      <S.Container>
+        <S.PageTitle>문제 풀기</S.PageTitle>
+        <S.SelectionSection>
+          <S.SectionTitle>
+            카테고리 또는 회사를 선택하면 총 10문제가 제공됩니다.
+            <br />
+            각 문제마다 AI 피드백을 받을 수 있습니다.
+          </S.SectionTitle>
 
-        <S.SelectGroup>
-          <S.SelectLabel>카테고리 (선택)</S.SelectLabel>
-          <S.Select value={category} onChange={(e) => setCategory(e.target.value)}>
-            <option value="">선택하지 않음</option>
-            <option value="back">백엔드</option>
-            <option value="front">프론트엔드</option>
-            <option value="design">디자인</option>
-            <option value="security">보안</option>
-          </S.Select>
-        </S.SelectGroup>
+          <S.SelectGroup>
+            <S.SelectLabel>카테고리 (선택)</S.SelectLabel>
+            <S.Select value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="">선택하지 않음</option>
+              <option value="back">백엔드</option>
+              <option value="front">프론트엔드</option>
+              <option value="design">디자인</option>
+              <option value="security">보안</option>
+            </S.Select>
+          </S.SelectGroup>
 
-        <S.SelectGroup>
-          <S.SelectLabel>회사 (선택)</S.SelectLabel>
-          <S.Select value={company} onChange={(e) => setCompany(e.target.value)}>
-            <option value="">선택하지 않음</option>
-            <option value="마이다스IT">마이다스IT</option>
-            <option value="신한은행">신한은행</option>
-            <option value="블루바이저">블루바이저</option>
-            <option value="아이디노">아이디노</option>
-            <option value="니더">니더</option>
-            <option value="라이너">라이너</option>
-            <option value="핀다">핀다</option>
-            <option value="브랜치앤바운드">브랜치앤바운드</option>
-            <option value="아키스케치">아키스케치</option>
-            <option value="샌드버그">샌드버그</option>
-            <option value="후아">후아</option>
-            <option value="쏘카">쏘카</option>
-            <option value="씨메스">씨메스</option>
-            <option value="똑개">똑개</option>
-            <option value="더스팟">더스팟</option>
-            <option value="지오영">지오영</option>
-            <option value="라포랩스">라포랩스</option>
-            <option value="서플라이스">서플라이스</option>
-            <option value="잉카인터넷">잉카인터넷</option>
-            <option value="미르니">미르니</option>
-            <option value="드래프타입">드래프타입</option>
-            <option value="달파">달파</option>
-            <option value="사이버다임">사이버다임</option>
-            <option value="U2SR">U2SR</option>
-            <option value="우리웍스">우리웍스</option>
-            <option value="큐오티">큐오티</option>
-            <option value="바카티오">바카티오</option>
-            <option value="리얼시큐">리얼시큐</option>
-            <option value="썬컴">썬컴</option>
-            <option value="공감오래컨텐츠">공감오래컨텐츠</option>
-          </S.Select>
-        </S.SelectGroup>
+          <S.SelectGroup>
+            <S.SelectLabel>회사 (선택)</S.SelectLabel>
+            <S.Select value={company} onChange={(e) => setCompany(e.target.value)}>
+              <option value="">선택하지 않음</option>
+              <option value="마이다스IT">마이다스IT</option>
+              <option value="신한은행">신한은행</option>
+              <option value="블루바이저">블루바이저</option>
+              <option value="아이디노">아이디노</option>
+              <option value="니더">니더</option>
+              <option value="라이너">라이너</option>
+              <option value="핀다">핀다</option>
+              <option value="브랜치앤바운드">브랜치앤바운드</option>
+              <option value="아키스케치">아키스케치</option>
+              <option value="샌드버그">샌드버그</option>
+              <option value="후아">후아</option>
+              <option value="쏘카">쏘카</option>
+              <option value="씨메스">씨메스</option>
+              <option value="똑개">똑개</option>
+              <option value="더스팟">더스팟</option>
+              <option value="지오영">지오영</option>
+              <option value="라포랩스">라포랩스</option>
+              <option value="서플라이스">서플라이스</option>
+              <option value="잉카인터넷">잉카인터넷</option>
+              <option value="미르니">미르니</option>
+              <option value="드래프타입">드래프타입</option>
+              <option value="달파">달파</option>
+              <option value="사이버다임">사이버다임</option>
+              <option value="U2SR">U2SR</option>
+              <option value="우리웍스">우리웍스</option>
+              <option value="큐오티">큐오티</option>
+              <option value="바카티오">바카티오</option>
+              <option value="리얼시큐">리얼시큐</option>
+              <option value="썬컴">썬컴</option>
+              <option value="공감오래컨텐츠">공감오래컨텐츠</option>
+            </S.Select>
+          </S.SelectGroup>
 
-        {isLoading && (
-          <S.LoadingSection>
-            <S.Spinner />
-            <S.LoadingText>문제를 불러오는 중입니다...</S.LoadingText>
-          </S.LoadingSection>
-        )}
+          {isLoading && (
+            <S.LoadingSection>
+              <S.Spinner />
+              <S.LoadingText>문제를 불러오는 중입니다...</S.LoadingText>
+            </S.LoadingSection>
+          )}
 
-        <S.NavigationButtons>
-          <S.NavButton primary onClick={handleStart} disabled={(!category && !company) || isLoading}>
-            {isLoading ? '문제 불러오는 중...' : '시작하기'}
-          </S.NavButton>
-        </S.NavigationButtons>
-      </S.SelectionSection>
-    </S.Container>
+          <S.NavigationButtons>
+            <S.NavButton primary onClick={handleStart} disabled={(!category && !company) || isLoading}>
+              {isLoading ? '문제 불러오는 중...' : '시작하기'}
+            </S.NavButton>
+          </S.NavigationButtons>
+        </S.SelectionSection>
+      </S.Container>
+    </S.PageWrapper>
   );
 }
