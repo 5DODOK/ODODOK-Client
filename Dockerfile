@@ -14,6 +14,8 @@ COPY .yarnrc.yml ./
 COPY .yarn ./.yarn
 RUN yarn install --immutable
 
+COPY .env.local .env.local
+
 # 프로젝트 복사 및 빌드
 COPY . .
 RUN yarn build
