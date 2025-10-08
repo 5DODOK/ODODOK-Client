@@ -35,8 +35,11 @@ export default function RankContainer() {
             <S.TopUserCard key={user.rank} rank={index + 1}>
               <S.RankIcon>{getRankIcon(user.rank)}</S.RankIcon>
               <S.TopUserAvatar>
-                {/* 아바타 없음, 이니셜로 대체 */}
-                <S.AvatarImage as="div">{user.username[0]}</S.AvatarImage>
+                {user.profileImageUrl ? (
+                  <S.AvatarImage src={user.profileImageUrl} alt={user.username} />
+                ) : (
+                  <S.AvatarImage as="div">{user.username[0]}</S.AvatarImage>
+                )}
               </S.TopUserAvatar>
               <S.TopUserName>{user.username}</S.TopUserName>
               <S.TopUserPoints>{user.points.toLocaleString()}P</S.TopUserPoints>
@@ -58,7 +61,11 @@ export default function RankContainer() {
               </S.RankCell>
               <S.UserCell>
                 <S.UserAvatar>
-                  <S.AvatarImage as="div">{user.username[0]}</S.AvatarImage>
+                  {user.profileImageUrl ? (
+                    <S.AvatarImage src={user.profileImageUrl} alt={user.username} />
+                  ) : (
+                    <S.AvatarImage as="div">{user.username[0]}</S.AvatarImage>
+                  )}
                 </S.UserAvatar>
                 <S.UserName>{user.username}</S.UserName>
               </S.UserCell>

@@ -4,6 +4,7 @@ export interface RankUser {
   rank: number;
   username: string;
   points: number;
+  profileImageUrl?: string;
 }
 
 export interface RankResponse {

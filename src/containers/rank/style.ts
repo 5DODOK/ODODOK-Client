@@ -71,6 +71,16 @@ export const AvatarImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  
+  &[as="div"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
 `;
 
 export const TopUserName = styled.h3`
