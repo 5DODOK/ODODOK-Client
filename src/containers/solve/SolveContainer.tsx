@@ -109,17 +109,19 @@ export default function SolveContainer() {
     setAnswers(new Map(answers.set(currentQuestion.questionId, currentAnswer)));
 
     // 피드백 요청
-    try {
-      const feedback = await feedbackMutation.mutateAsync({
-        userAnswer: currentAnswer,
-        question: currentQuestion.question,
-      });
-      setCurrentFeedback(feedback);
-      setShowFeedback(true);
-    } catch (error) {
-      console.error('피드백 요청 실패:', error);
-      alert('피드백을 받는데 실패했습니다');
-    }
+    feedbackMutation.mutate({
+      userAnswer: currentAnswer,
+      question: currentQuestion.question,
+    }, {
+      onSuccess: (feedback) => {
+        setCurrentFeedback(feedback);
+        setShowFeedback(true);
+      },
+      onError: (error) => {
+        console.error('피드백 요청 실패:', error);
+        alert('피드백을 받는데 실패했습니다');
+      }
+    });
   };
 
   // 다음 문제로
@@ -224,7 +226,7 @@ export default function SolveContainer() {
             />
           </S.AnswerSection>
 
-          {!showFeedback && (
+          {!showFeedback && !feedbackMutation.isPending && (
             <S.NavigationButtons>
               <S.NavButton onClick={handleSubmitAnswer} disabled={!currentAnswer.trim()} primary>
                 답변 제출
@@ -232,7 +234,15 @@ export default function SolveContainer() {
             </S.NavigationButtons>
           )}
 
-          {showFeedback && currentFeedback && (
+          {feedbackMutation.isPending && (
+            <S.LoadingSection>
+              <S.Spinner />
+              <S.LoadingText>AI가 답변을 분석하고 피드백을 생성하고 있습니다...</S.LoadingText>
+              <S.LoadingSubText>잠시만 기다려주세요 (약 5-10초 소요)</S.LoadingSubText>
+            </S.LoadingSection>
+          )}
+
+          {showFeedback && currentFeedback && !feedbackMutation.isPending && (
             <S.FeedbackSection>
               <S.FeedbackTitle>💡 AI 피드백</S.FeedbackTitle>
               <S.FeedbackText>{currentFeedback.feedback}</S.FeedbackText>
@@ -311,6 +321,13 @@ export default function SolveContainer() {
             <option value="공감오래컨텐츠">공감오래컨텐츠</option>
           </S.Select>
         </S.SelectGroup>
+
+        {isLoading && (
+          <S.LoadingSection>
+            <S.Spinner />
+            <S.LoadingText>문제를 불러오는 중입니다...</S.LoadingText>
+          </S.LoadingSection>
+        )}
 
         <S.NavigationButtons>
           <S.NavButton primary onClick={handleStart} disabled={(!category && !company) || isLoading}>

@@ -475,3 +475,43 @@ export const StatValue = styled.div`
   font-weight: 700;
   color: #1a1a1a;
 `;
+
+export const LoadingSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  background-color: #f9fafb;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+`;
+
+export const Spinner = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #10b981;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+export const LoadingText = styled.p`
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  text-align: center;
+`;
+
+export const LoadingSubText = styled.p`
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-align: center;
+`;
