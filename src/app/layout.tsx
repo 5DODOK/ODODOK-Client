@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "../styles/globals.css";
 import "../styles/nprogress.css";
 import Header from "@/components/layout/Header";
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ProgressBar />
+        <Suspense fallback={null}>
+          <ProgressBar />
+        </Suspense>
         <Header />
         <QueryProvider>{children}</QueryProvider>
       </body>

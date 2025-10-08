@@ -20,6 +20,12 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    rules: {
+      "@next/next/no-img-element": "off", // img 태그 사용 허용
+      "@typescript-eslint/no-unused-vars": "warn", // 미사용 변수를 warning으로
+    },
+  },
 ];
 
 export default eslintConfig;

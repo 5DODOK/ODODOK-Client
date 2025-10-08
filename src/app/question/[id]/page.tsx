@@ -19,7 +19,6 @@ interface QuestionData {
 export default function QuestionDetailPage() {
   const router = useRouterWithNProgress();
   const params = useParams();
-  const questionId = params.id;
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
 
   useEffect(() => {

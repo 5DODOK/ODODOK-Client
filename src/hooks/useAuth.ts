@@ -5,7 +5,7 @@ import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
 
 export function useAuth() {
   const router = useRouterWithNProgress();
-  const { userInfo, isLoggedIn: storeIsLoggedIn, login, logout } = useUserStore();
+  const { userInfo, login, logout } = useUserStore();
 
   // 1단계: Google 인증 URL 받아서 이동
   const loginWithGoogle = useCallback(async () => {
@@ -46,7 +46,7 @@ export function useAuth() {
   }, [userInfo]);
 
   // 관리자 권한 확인
-  const isAdmin = useCallback((checkUser?: any) => {
+  const isAdmin = useCallback((checkUser?: { id?: number; email?: string }) => {
     const targetUser = checkUser || userInfo;
     if (!targetUser) return false;
     return targetUser.id === 1 || (targetUser.email && targetUser.email.endsWith('@bssm.hs.kr'));

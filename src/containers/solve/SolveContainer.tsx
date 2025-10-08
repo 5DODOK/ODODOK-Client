@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useProblems } from '@/hooks/useProblems';
 import { useFeedback } from '@/hooks/useFeedback';
 import { useSubmitAnswers } from '@/hooks/useSubmitAnswers';
-import { ProblemQuestion, AnswerItem } from '@/services/problemService';
+import { AnswerItem } from '@/services/problemService';
 import * as S from './style';
 
 // 카테고리 매핑 (name -> id)
@@ -68,7 +68,13 @@ export default function SolveContainer() {
 
   // 제출 완료 state
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submitResult, setSubmitResult] = useState<any>(null);
+  const [submitResult, setSubmitResult] = useState<{
+    message: string;
+    score: number;
+    correctAnswers: number;
+    pointsEarned: number;
+    rank: number;
+  } | null>(null);
 
   // API 파라미터 (ID로 변환)
   const categoryId = category ? CATEGORY_MAP[category] : undefined;

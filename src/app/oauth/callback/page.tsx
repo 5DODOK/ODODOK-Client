@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import customAxios from '@/services/customAxios';
 import { useUserStore } from '@/store/userStore';
 import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
 
-export default function OAuthCallbackPage() {
+function OAuthCallbackContent() {
   const router = useRouterWithNProgress();
   const searchParams = useSearchParams();
   const [error, setError] = useState('');
@@ -56,9 +56,12 @@ export default function OAuthCallbackPage() {
 
         router.replace('/');
 
-      } catch (e: any) {
+      } catch (e: unknown) {
         console.error('OAuth 콜백 처리 실패:', e);
-        setError(e?.response?.data?.message || '로그인 처리 중 오류가 발생했습니다.');
+        const errorMessage = e && typeof e === 'object' && 'response' in e 
+          ? ((e as { response?: { data?: { message?: string } } }).response?.data?.message || '로그인 처리 중 오류가 발생했습니다.')
+          : '로그인 처리 중 오류가 발생했습니다.';
+        setError(errorMessage);
       }
     })();
   }, [searchParams, router, login]);
@@ -88,5 +91,13 @@ export default function OAuthCallbackPage() {
       <div>로그인 처리중...</div>
       <div style={{ marginTop: '10px' }}>잠시만 기다려주세요.</div>
     </div>
+  );
+}
+
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: 'center', marginTop: 40 }}>로딩중...</div>}>
+      <OAuthCallbackContent />
+    </Suspense>
   );
 }

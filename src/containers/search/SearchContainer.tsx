@@ -1,5 +1,5 @@
 "use client";
-import { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
 import * as S from './style';
 import { useSearchQuestions } from '@/hooks/useSearchQuestions';

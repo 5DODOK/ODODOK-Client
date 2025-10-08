@@ -1,6 +1,5 @@
 "use client";
 import { useRankings } from '@/hooks/useRankings';
-import { useState } from 'react';
 import * as S from './style';
 
 export default function RankContainer() {

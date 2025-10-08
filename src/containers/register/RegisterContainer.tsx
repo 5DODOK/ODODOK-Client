@@ -52,9 +52,12 @@ export default function RegisterContainer() {
               `총 ${data.summary.totalRows}건, 생성 ${data.summary.created}건, 수정 ${data.summary.updated}건, 건너뜀 ${data.summary.skipped}건`);
             setCsvFile(null);
           },
-          onError: (err: any) => {
-            if (err?.response?.data?.message) {
-              alert(err.response.data.message);
+          onError: (err: unknown) => {
+            const errorMessage = err && typeof err === 'object' && 'response' in err
+              ? ((err as { response?: { data?: { message?: string } } }).response?.data?.message)
+              : undefined;
+            if (errorMessage) {
+              alert(errorMessage);
             } else {
               alert('CSV 업로드 중 오류가 발생했습니다.');
             }
@@ -76,12 +79,13 @@ export default function RegisterContainer() {
         alert('로그인이 필요합니다.');
         return;
       }
-      const payload: any = {
+      const payload = {
         question: formData.title,
         difficulty: formData.difficulty,
-        year: undefined,
-        company_id: undefined,
-        category_id: undefined
+        year: undefined as number | undefined,
+        company_id: undefined as number | undefined,
+        category_id: undefined as number | undefined,
+        content: undefined as string | undefined
       };
       if (formData.company) payload.company_id = 3; // TODO: 회사명->id 매핑 필요
       if (formData.category) payload.category_id = 12; // TODO: 카테고리명->id 매핑 필요
@@ -101,9 +105,12 @@ export default function RegisterContainer() {
             });
             setCsvFile(null);
           },
-          onError: (err: any) => {
-            if (err?.response?.data?.message) {
-              alert(err.response.data.message);
+          onError: (err: unknown) => {
+            const errorMessage = err && typeof err === 'object' && 'response' in err
+              ? ((err as { response?: { data?: { message?: string } } }).response?.data?.message)
+              : undefined;
+            if (errorMessage) {
+              alert(errorMessage);
             } else {
               alert('문제 등록 중 오류가 발생했습니다.');
             }
