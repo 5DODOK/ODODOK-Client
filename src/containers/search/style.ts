@@ -1,24 +1,66 @@
 import styled from '@emotion/styled';
 
+export const PageWrapper = styled.main`
+  background: linear-gradient(180deg, #fafbfd 0%, #f0f2f8 50%, #e8eaf5 100%);
+  min-height: calc(100dvh - 100px);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 600px;
+    background: radial-gradient(ellipse at top, rgba(102, 126, 234, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+`;
+
 export const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 56px 24px;
+  position: relative;
+  z-index: 1;
 `;
 
 export const PageTitle = styled.h1`
-  font-size: 2rem;
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 40px;
   text-align: center;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+  }
 `;
 
 export const SearchSection = styled.div`
-  background-color: #f8fafc;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 
+    0 8px 32px rgba(102, 126, 234, 0.08),
+    0 2px 8px rgba(0,0,0,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.8);
 `;
 
 export const Form = styled.form`
@@ -50,35 +92,41 @@ export const Label = styled.label`
 `;
 
 export const Input = styled.input`
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
   
   &:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
   
   &::placeholder {
-    color: #9ca3af;
+    color: #999;
   }
 `;
 
 export const Select = styled.select`
-  padding: 0.75rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: white;
-  transition: border-color 0.2s ease;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.3s ease;
   
   &:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
 `;
 
@@ -89,43 +137,48 @@ export const ButtonRow = styled.div`
 `;
 
 export const SearchButton = styled.button`
-  padding: 0.75rem 2rem;
-  background-color: #3b82f6;
+  padding: 12px 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:hover:not(:disabled) {
-    background-color: #2563eb;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5), 0 3px 6px rgba(0, 0, 0, 0.15);
   }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
 export const ResetButton = styled.button`
-  padding: 0.75rem 2rem;
-  background-color: #6b7280;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 12px 32px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  color: #111;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
   &:hover {
-    background-color: #4b5563;
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(102, 126, 234, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -151,16 +204,41 @@ export const ProblemList = styled.div`
 `;
 
 export const ProblemCard = styled.div`
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: all 0.2s ease;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 8px 32px rgba(102, 126, 234, 0.08),
+    0 2px 8px rgba(0,0,0,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
   
   &:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 
+      0 12px 40px rgba(102, 126, 234, 0.12),
+      0 4px 12px rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
@@ -216,19 +294,30 @@ export const ProblemActions = styled.div`
 `;
 
 export const ActionButton = styled.button<{ primary?: boolean }>`
-  padding: 0.5rem 1rem;
-  background-color: ${props => props.primary ? '#10b981' : '#f3f4f6'};
+  padding: 8px 16px;
+  background: ${props => props.primary
+    ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+    : 'rgba(255, 255, 255, 0.9)'};
   color: ${props => props.primary ? 'white' : '#374151'};
-  border: none;
+  border: ${props => props.primary ? 'none' : '1px solid rgba(0, 0, 0, 0.06)'};
   border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: ${props => props.primary
+    ? '0 4px 12px rgba(16, 185, 129, 0.3)'
+    : '0 2px 8px rgba(0,0,0,0.06)'};
   
   &:hover {
-    background-color: ${props => props.primary ? '#059669' : '#e5e7eb'};
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: ${props => props.primary
+    ? '0 6px 16px rgba(16, 185, 129, 0.4)'
+    : '0 4px 12px rgba(0,0,0,0.1)'};
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
