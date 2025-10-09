@@ -12,6 +12,10 @@ const CATEGORY_MAP: Record<string, number> = {
   'front': 2,
   'design': 3,
   'security': 4,
+  'bank': 5,
+  'infra': 6,
+  'ai': 7,
+  'embedded': 8,
 };
 
 // 회사 매핑 (name -> id)
@@ -288,6 +292,10 @@ export default function SolveContainer() {
             <option value="front">프론트엔드</option>
             <option value="design">디자인</option>
             <option value="security">보안</option>
+            <option value="bank">은행/금융</option>
+            <option value="infra">인프라</option>
+            <option value="ai">AI/머신러닝</option>
+            <option value="embedded">임베디드</option>
           </S.Select>
         </S.SelectGroup>
 
