@@ -2,10 +2,11 @@ import customAxios from './customAxios';
 
 export interface CreateQuestionPayload {
   question: string;
+  interviewType: '기술면접' | '인성면접';
   difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
   year?: number;
-  company_id?: number;
-  category_id?: number;
+  companyName?: string;
+  categoryId?: number;
 }
 
 export async function createQuestion(payload: CreateQuestionPayload, token: string) {
@@ -81,6 +82,31 @@ export async function searchQuestions(params: SearchQuestionParams, token?: stri
   const res = await customAxios.get<SearchQuestionResponse>('/search', {
     params,
     ...config,
+  });
+  return res.data;
+}
+
+// 질문 수정
+export interface UpdateQuestionPayload {
+  question?: string;
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD';
+  year?: number;
+  companyName?: string;
+  categoryId?: number;
+  interviewType?: '기술면접' | '인성면접';
+}
+
+export async function updateQuestion(id: number, payload: UpdateQuestionPayload, token: string) {
+  const res = await customAxios.patch(`/question/${id}`, payload, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+}
+
+// 질문 삭제
+export async function deleteQuestion(id: number, token: string) {
+  const res = await customAxios.delete(`/question/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
   });
   return res.data;
 }
