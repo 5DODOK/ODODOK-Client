@@ -117,7 +117,14 @@ export default function RegisterContainer() {
         alert('로그인이 필요합니다.');
         return;
       }
-      const payload: any = {
+      const payload: {
+        question: string;
+        interviewType: '기술면접' | '인성면접';
+        difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+        year?: number;
+        companyName?: string;
+        categoryId?: number;
+      } = {
         question: formData.title,
         interviewType: formData.interviewType,
         difficulty: formData.difficulty

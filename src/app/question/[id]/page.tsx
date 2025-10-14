@@ -1,5 +1,4 @@
 "use client";
-import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import * as S from './style';
 import { useRouterWithNProgress } from '@/hooks/useRouterWithNProgress';
@@ -18,7 +17,6 @@ interface QuestionData {
 
 export default function QuestionDetailPage() {
   const router = useRouterWithNProgress();
-  const params = useParams();
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
 
   useEffect(() => {
