@@ -184,36 +184,6 @@ export default function SolveContainer() {
           <S.CompletionIcon>🎉</S.CompletionIcon>
           <S.CompletionTitle>{submitResult.message}</S.CompletionTitle>
 
-          {/* 점수 섹션 - 점수가 있는 경우에만 표시 */}
-          {(submitResult.averageScore !== null || submitResult.logicScore !== null) && (
-            <S.ResultStats>
-              {submitResult.averageScore !== null && (
-                <S.StatItem>
-                  <S.StatLabel>평균 점수</S.StatLabel>
-                  <S.StatValue>{submitResult.averageScore}점</S.StatValue>
-                </S.StatItem>
-              )}
-              {submitResult.logicScore !== null && (
-                <S.StatItem>
-                  <S.StatLabel>논리성</S.StatLabel>
-                  <S.StatValue>{submitResult.logicScore}점</S.StatValue>
-                </S.StatItem>
-              )}
-              {submitResult.accuracyScore !== null && (
-                <S.StatItem>
-                  <S.StatLabel>정확성</S.StatLabel>
-                  <S.StatValue>{submitResult.accuracyScore}점</S.StatValue>
-                </S.StatItem>
-              )}
-              {submitResult.clarityScore !== null && (
-                <S.StatItem>
-                  <S.StatLabel>명확성</S.StatLabel>
-                  <S.StatValue>{submitResult.clarityScore}점</S.StatValue>
-                </S.StatItem>
-              )}
-            </S.ResultStats>
-          )}
-
           {/* 전체 평가 코멘트 */}
           {submitResult.overallComment && (
             <S.CommentSection>
