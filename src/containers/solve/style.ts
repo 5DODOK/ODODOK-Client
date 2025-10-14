@@ -572,3 +572,35 @@ export const LoadingSubText = styled.p`
   color: #6b7280;
   text-align: center;
 `;
+
+// 코멘트 섹션
+export const CommentSection = styled.div`
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 24px 0;
+  box-shadow: 
+    0 8px 32px rgba(102, 126, 234, 0.08),
+    0 2px 8px rgba(0,0,0,0.04);
+`;
+
+export const CommentTitle = styled.h3`
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+export const CommentText = styled.p`
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #374151;
+  white-space: pre-wrap;
+  word-break: break-word;
+`;

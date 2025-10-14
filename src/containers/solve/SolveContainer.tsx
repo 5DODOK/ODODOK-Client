@@ -74,8 +74,11 @@ export default function SolveContainer() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submitResult, setSubmitResult] = useState<{
     message: string;
-    score: number;
-    correctAnswers: number;
+    averageScore: number | null;
+    logicScore: number | null;
+    accuracyScore: number | null;
+    clarityScore: number | null;
+    overallComment: string;
     pointsEarned: number;
     rank: number;
   } | null>(null);
@@ -178,17 +181,49 @@ export default function SolveContainer() {
     return (
       <S.Container>
         <S.CompletionSection>
-          <S.CompletionIcon>�</S.CompletionIcon>
+          <S.CompletionIcon>🎉</S.CompletionIcon>
           <S.CompletionTitle>{submitResult.message}</S.CompletionTitle>
+
+          {/* 점수 섹션 - 점수가 있는 경우에만 표시 */}
+          {(submitResult.averageScore !== null || submitResult.logicScore !== null) && (
+            <S.ResultStats>
+              {submitResult.averageScore !== null && (
+                <S.StatItem>
+                  <S.StatLabel>평균 점수</S.StatLabel>
+                  <S.StatValue>{submitResult.averageScore}점</S.StatValue>
+                </S.StatItem>
+              )}
+              {submitResult.logicScore !== null && (
+                <S.StatItem>
+                  <S.StatLabel>논리성</S.StatLabel>
+                  <S.StatValue>{submitResult.logicScore}점</S.StatValue>
+                </S.StatItem>
+              )}
+              {submitResult.accuracyScore !== null && (
+                <S.StatItem>
+                  <S.StatLabel>정확성</S.StatLabel>
+                  <S.StatValue>{submitResult.accuracyScore}점</S.StatValue>
+                </S.StatItem>
+              )}
+              {submitResult.clarityScore !== null && (
+                <S.StatItem>
+                  <S.StatLabel>명확성</S.StatLabel>
+                  <S.StatValue>{submitResult.clarityScore}점</S.StatValue>
+                </S.StatItem>
+              )}
+            </S.ResultStats>
+          )}
+
+          {/* 전체 평가 코멘트 */}
+          {submitResult.overallComment && (
+            <S.CommentSection>
+              <S.CommentTitle>전체 평가</S.CommentTitle>
+              <S.CommentText>{submitResult.overallComment}</S.CommentText>
+            </S.CommentSection>
+          )}
+
+          {/* 포인트 및 랭킹 */}
           <S.ResultStats>
-            <S.StatItem>
-              <S.StatLabel>점수</S.StatLabel>
-              <S.StatValue>{submitResult.score}점</S.StatValue>
-            </S.StatItem>
-            <S.StatItem>
-              <S.StatLabel>정답 수</S.StatLabel>
-              <S.StatValue>{submitResult.correctAnswers} / {questions.length}</S.StatValue>
-            </S.StatItem>
             <S.StatItem>
               <S.StatLabel>획득 포인트</S.StatLabel>
               <S.StatValue>{submitResult.pointsEarned}P</S.StatValue>
@@ -198,6 +233,7 @@ export default function SolveContainer() {
               <S.StatValue>{submitResult.rank}위</S.StatValue>
             </S.StatItem>
           </S.ResultStats>
+
           <S.NavigationButtons>
             <S.NavButton onClick={() => window.location.reload()}>다시 풀기</S.NavButton>
             <S.NavButton primary onClick={() => window.location.href = '/rank'}>랭킹 보기</S.NavButton>
@@ -297,7 +333,7 @@ export default function SolveContainer() {
               <option value="infra">인프라</option>
               <option value="ai">AI/머신러닝</option>
               <option value="embedded">임베디드</option>
-          </S.Select>
+            </S.Select>
           </S.SelectGroup>
 
           <S.SelectGroup>

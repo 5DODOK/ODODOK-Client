@@ -39,8 +39,11 @@ export interface SubmitAnswersRequest {
 
 export interface SubmitAnswersResponse {
   message: string;
-  score: number;
-  correctAnswers: number;
+  averageScore: number | null;
+  logicScore: number | null;
+  accuracyScore: number | null;
+  clarityScore: number | null;
+  overallComment: string;
   pointsEarned: number;
   rank: number;
 }
